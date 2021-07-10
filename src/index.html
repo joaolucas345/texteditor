@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Text Editor!</title>
+  </head>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      max-width: 38rem;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      background: url("./wallpaper.gif");
+      background-size: cover;
+      position: relative;
+      overflow: hidden; 
+    }
+    :root{
+      --visbility: "visible";
+      --visibility-create:"visible";
+      --visibility-slot:"visible"; 
+      --index:-1;
+      --fontSize:20px;
+      --background: rgb(38,42,45);
+      --color: rgb(85,190,202);
+      --visbility-theme:"visible";
+    }
+    a{
+      color:cyan;
+      margin-left: 5vw;
+    }
+
+    .moveablearea{
+      height: 100vh;
+      width: 100vw;
+      background-color: rgba(0,0,0,0.6);
+      position: fixed;
+      top:0;
+      z-index: 1;
+      visibility: var(--visibility);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container{
+      border-radius: 20px;
+      visibility: var(--visibility);
+      position: relative;
+      height:50%;
+      width: 50%;
+      background-color: rgb(38,42,45);
+      display: flex;
+      position: relative;
+      /* align-items: center; */
+      justify-content: center;
+      /* flex-direction: column; */
+    }
+    .container *{
+      margin-right: 10%;
+      margin-left: 10% ;
+    }
+    .column{
+      position: absolute;
+      height: 100%;
+      width:40%;
+      left:25%;
+      display: flex;
+      justify-content: space-around;
+      flex-direction: column;
+      visibility: var(--visibility-create);
+      position: relative;
+      /* background-color: red; */
+    }
+    .column-slot{
+      position: absolute;
+      height: 100%;
+      /* left: 30%; */
+      right: 25%;
+      margin: 0;
+      /* background-color: greenyellow; */
+      width:40%;
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      flex-direction: column;
+      visibility: var(--visibility-slot);
+      position: relative;
+    }
+
+    a{
+      padding:1%;
+      color:white;
+      background-color: rgb(0,122,204);
+      text-align: center;
+      cursor:pointer;
+    }
+    input[type=text] , input[type=number]{
+      background-color: transparent;
+      outline: none;
+      color:white;
+      border:2px solid rgb(0,122,204);
+      padding: 2%;
+      border-radius: 20px;
+    }
+    label{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+    label > input{
+      visibility: hidden;
+      width: 0;
+      position: absolute;
+    }
+    p{
+      width:100%;
+      margin: 0;
+      cursor: pointer;
+      background-color: rgb(0,122,204);
+      color: white;
+    }
+    h2{
+      position: absolute;
+      right:-9%;
+      top:1%;
+      height: 1vw;
+      width: 1vw;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2%;
+      border:2px solid red;
+      color: white;
+      border-radius: 100px;
+      margin: 0;
+      cursor: pointer;
+    }
+    .list{
+      position: fixed;
+      left:  96vw;
+      background-color: red;
+      display: flex;
+      border-radius: 5vw;
+      height: 4vw;
+      justify-content: center;
+      align-items: center;
+      width: 4vw;
+      margin: 0;
+      text-align: center;
+      visibility: visible;
+      top: 0;
+      color: white;
+      position: absolute;
+      cursor:pointer;
+    }
+    .text{
+      margin: 0;
+      padding: 0;
+      margin-top: 5vh;
+      height: 90vh;
+      min-width: 90vw;
+      font-family: sans-serif;
+      margin-left: 5vw;
+      margin-right: 5vw;
+      background-color: var(--background);
+      font-size: var(--fontSize);
+      color:var(--color);
+    }
+    .panelBtn{
+      position: absolute;
+      left: 0;
+      margin: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      /* background-color: red; */
+    }
+    .panelBtn > button{
+      margin: 0;
+      height: 33.33%;
+      border: 1px solid black;
+      cursor: pointer;
+      color: white;
+      background-color: rgb(0,122,204);
+      /* border-top-left-radius: 20px; */
+    }
+    .first{
+      margin: 0;
+      height: 40px;
+      border: 1px solid black;
+      cursor: pointer;
+      color: white;
+      color: purple;
+      background-color: rgb(0,122,204);
+      border-top-left-radius: 20px;
+    }
+    .last{
+      margin: 0;
+      height: 40px;
+      border: 1px solid black;
+      cursor: pointer;
+      color: white;
+      background-color: rgb(0,122,204);
+      border-bottom-left-radius: 20px;
+    }
+    .panelBtn > .done{
+      background-color: transparent;
+      border: none;
+      /* color:black; */
+    }
+    .column-slot > .contact{
+      height:40%;
+      border:1px solid rgb(0,122,204);
+      overflow: auto;
+    }
+    .column-slot > input{
+      border-radius: 0;
+    }
+    .column-slot > .btns >  a{
+      margin: 0;
+      background-color: rgb(0,122,204);
+      min-width: calc(50% - 1px);
+      /* border-top: 2px solid black; */
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .column-slot > .btns{
+        height: 10%;
+        display: flex;
+    }
+    .right-line{
+      border-right: 2px solid black;
+    }
+    .contact{
+      position: relative;
+      /* display: flex; */
+      /* justify-content: center; */
+      /* align-items: flex-start; */
+      /* flex-direction: column; */
+    }
+    .slot-container{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color:white;
+      margin: 0;
+      padding: 0;
+      padding: 2%;
+      max-width: 90%;
+      min-width: 90%;
+      word-break: break-all;
+      margin: 0;
+      border-bottom: 1px solid rgb(0,122,204);
+    }
+    .slot-container > div {
+      margin-top: 2%;
+      display: flex;
+      position: relative;
+      width: 100%;
+      /* background-color: rosybrown; */
+    }
+    .slot-container > div > button {
+      cursor:pointer;
+      background-color: red;
+      border:none;
+      color:white;
+      height: 50%;
+      width: 35%;
+    }
+    .column-theme{
+      position: absolute;
+      right:25%;
+      display: flex;
+      height: 100%;
+      visibility: var(--visbility-theme);
+      /* width:40%; */
+      justify-content: space-around;
+      align-items: center;
+      flex-direction: column;
+    }
+    .column-theme > button{
+      margin: 0;
+      height: 10%;
+      width: 100%;
+      border: 1px solid black;
+      cursor: pointer;
+      color: white;
+      background-color: rgb(0,122,204);
+    }
+    h4{
+      margin: 0;
+      padding: 0;
+      color:white;
+      font-size: 20px;
+    }
+
+  </style>
+  <body>
+    <textarea class="text" spellcheck="false"></textarea>
+    <div class="list"> <h3>:</h3> </div>
+    <div class="moveablearea">
+      <div class="container">
+        <div class="panelBtn">
+          <button class="done first "id="create">Create/Open File</button>
+          <button id="slot">Slots</button>
+          <button class="last" id="theme">Theme</button>
+        </div>
+        <div class="column">
+          <input type="text" placeholder="file name" id="name">
+          <input type="number" value="20" id=".number" min="10px" placeholder="text size">
+          <label for="file" >
+            <input type="file" id="file">
+            <p>
+              Choose File
+            </p>
+          </label>
+          <a>download</a>
+        </div>
+        <div class="column-slot">
+          <div class="contact" id="slots">
+
+          </div>
+          <input type="text" id="slotName" placeholder="type the slot name">
+          <div class="btns">
+            <a class='right-line' id="save">save</a>
+            <a id="reload">reload</a>
+          </div>
+        </div>
+        <div class="column-theme">
+          <h4>Background: </h4>
+          <input type="text" placeholder="background" id="back">
+          <h4>Color: </h4>
+          <input type="text" placeholder="color" id="color">
+          <button id="saveColor">Save</button>
+        </div>
+        <h2>X</h2>
+      </div>
+    </div>
+  <script>
+    let fileName
+    const editor = document.querySelector("textarea")
+    const input = document.querySelector("#name")
+    const save = document.getElementById("file")
+    const btn = document.querySelector("a")
+    const slotsContainer = document.getElementById("slots")
+    const slotName = document.getElementById("slotName")
+    const closeBtn = document.querySelector("h2")
+    const saveBtn = document.getElementById("save")
+    let useBtn = document.getElementsByClassName("opensave")
+    let delBtn = document.getElementsByClassName("del")
+    const openBtn = document.querySelector(".list")
+    const numInput = document.getElementById(".number")
+    const createOpen = document.getElementById("create")
+    const slot = document.getElementById("slot")
+    const reloadBtn = document.getElementById("reload")
+    const backInput = document.getElementById("back")
+    const colorInput = document.getElementById("color")
+    const theme = document.getElementById("theme")
+    const colorSave = document.getElementById("saveColor")
+    const fileReader = new FileReader()
+
+    reloadBtn.onclick = () => {
+      window.location.reload()
+    }
+    document.documentElement.style.setProperty("--visibility" , "hidden")
+    document.documentElement.style.setProperty("--visibility-slot" , "hidden")
+    document.documentElement.style.setProperty("--visbility-theme" , "hidden")
+    document.documentElement.style.setProperty("--visibility-create" , "hidden")
+    fileReader.onload = (e) => {
+        editor.value = e.target.result
+      }
+    closeBtn.onclick = () => {
+      document.documentElement.style.setProperty("--visibility" , "hidden")
+    document.documentElement.style.setProperty("--visibility-slot" , "hidden")
+    document.documentElement.style.setProperty("--visbility-theme" , "hidden")
+    document.documentElement.style.setProperty("--visibility-create" , "hidden")
+      document.documentElement.style.setProperty("--visibility" , "hidden")
+    }
+    editor.addEventListener("keydown" , (e) => {
+      if(e.key == "Tab"){
+        e.preventDefault()
+        const before = editor.value.substring(0,editor.selectionStart)
+        const num = editor.selectionEnd
+        const after =  editor.value.substring(editor.selectionEnd)
+        const value = `${before ? before : ""}     ${after ? after : ""}` 
+        editor.value = value
+        editor.selectionEnd = num+5
+        editor.click()
+      }
+    })
+    colorSave.onclick = () => {
+      if(colorInput.value != ""){
+        localStorage.setItem("color" , colorInput.value)
+      }
+      if(backInput.value != ""){
+        localStorage.setItem("background" , backInput.value)
+      }
+    }
+
+    slot.onclick = () => {
+      slot.classList.add("done")
+      createOpen.classList.remove("done")
+      document.documentElement.style.setProperty("--visibility-create" , "hidden")
+      document.documentElement.style.setProperty("--visibility-slot" , "visible") 
+      document.documentElement.style.setProperty("--visbility-theme" , "hidden")
+      theme.classList.remove("done")
+    }
+    theme.onclick = () => {
+      slot.classList.remove("done")
+      createOpen.classList.remove("done")
+      document.documentElement.style.setProperty("--visibility-create" , "hidden")
+      document.documentElement.style.setProperty("--visibility-slot" , "hidden")
+      document.documentElement.style.setProperty("--visbility-theme" , "visible")
+      theme.classList.add("done")
+    }
+    createOpen.onclick = () => {
+      slot.classList.remove("done")
+      createOpen.classList.add("done")
+      document.documentElement.style.setProperty("--visbility-theme" , "hidden")
+      document.documentElement.style.setProperty("--visibility-create" , "visible")
+      document.documentElement.style.setProperty("--visibility-slot" , "hidden")
+
+      theme.classList.remove("done")
+    }
+
+    numInput.onchange = (e) => {
+      
+      document.documentElement.style.setProperty("--fontSize" , `${e.target.value}px`)
+    }
+    
+    openBtn.onclick = () => {
+      slot.classList.remove("done")
+      createOpen.classList.add("done")
+      theme.classList.remove("done")
+      document.documentElement.style.setProperty("--visibility-create" , "visible")
+      document.documentElement.style.setProperty("--visibility-slot" , "hidden")
+      document.documentElement.style.setProperty("--visbility-theme" , "hidden")
+      document.documentElement.style.setProperty("--visibility" , "visible")
+    }
+    btn.onclick = () => {
+      btn.setAttribute("href" , "data:text/plain;charset=utf-8,"+encodeURIComponent(editor.value))
+      btn.setAttribute("download" , input.value)
+    }
+    save.onchange = (e) => {
+      fileReader.readAsText(e.target.files[0])
+    }
+
+
+
+
+
+    if(!localStorage.getItem("save_slot")){
+      localStorage.setItem("save_slot" , "default")
+    }
+    if(!localStorage.getItem("background")){
+      localStorage.setItem("background" , "rgb(38,42,45)")
+    }else{
+      try{
+      document.documentElement.style.setProperty("--background" , localStorage.getItem("background"))
+      }catch(err){
+        console.log(err)
+      }
+    }
+    if(!localStorage.getItem("color")){
+      localStorage.setItem("color" , "rgb(85,190,202)")
+    }else{
+      try{
+      document.documentElement.style.setProperty("--color" , localStorage.getItem("color"))
+      }catch(err){
+        console.log(err)
+      }
+    }
+
+    var idb = window.indexedDB ||      // Use the standard DB API
+    window.mozIndexedDB ||   // Or Firefox's early version of it
+    window.webkitIndexedDB;  // Or Chrome's early version
+
+    var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction;
+    var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange;
+    let db , OpenRequest, transaction
+
+    saveBtn.addEventListener("click" , () => {
+          OpenRequest = window.indexedDB.open("text")
+          OpenRequest.onsuccess = () => {
+          db = OpenRequest.result
+          transaction = db.transaction("texts" , "readwrite").objectStore("texts")
+          transaction.put("" , slotName.value)
+          reloadBtn.style.background = "red"
+        }
+      })
+    OpenRequest = window.indexedDB.open("text")
+
+    OpenRequest.onupgradeneeded = (e) => {
+        const objectStore = OpenRequest.result.createObjectStore("texts" , {keypath:"/path"})
+    }
+
+
+    const main = async () => {
+        transaction = db.transaction("texts" , "readwrite").objectStore("texts")
+    const addPromise = () => {
+      return new Promise(resolver => {
+        transaction.openCursor().onsuccess = (e) => {
+          const cursor = e.target.result
+          if(cursor){
+            const sloth = document.createElement("div")
+          
+          sloth.innerHTML =
+           `
+           <div class="slot-container">
+              ${cursor.key}
+              <div>
+                <button class="opensave" value="${cursor.key}">open</button>
+                <button class="del" value="${cursor.key}">X</button>
+              </div>
+            </div>
+          `
+          slotsContainer.appendChild(sloth)
+          }
+          if(cursor == null){
+            resolver(true)
+          }else{
+            if(cursor.key == localStorage.getItem("save_slot")){
+              editor.value = cursor.value
+            }
+          }
+          cursor?.continue()
+        }
+      })
+    }
+    await addPromise()
+    useBtn = document.getElementsByClassName("opensave")
+    delBtn = document.getElementsByClassName("del")
+    for(let o = 0; o < delBtn.length ; o++){
+        const value = delBtn[o]
+        value.addEventListener("click" , () => {
+          OpenRequest = window.indexedDB.open("text")
+          OpenRequest.addEventListener("success", (e) => {
+              db = e.target.result
+              transaction = db.transaction("texts" , "readwrite").objectStore("texts")
+              transaction.delete(value.value)
+              reloadBtn.style.background = "red"
+          })
+        })
+    }
+    for(let s = 0; s < useBtn.length ; s++){
+        const value = useBtn[s]
+        value.addEventListener("click" , () => {
+          OpenRequest = window.indexedDB.open("text")
+          OpenRequest.addEventListener("success", (e) => {
+              db = e.target.result
+              transaction = db.transaction("texts" , "readwrite").objectStore("texts")
+              transaction.openCursor().onsuccess = (e) => {
+                const cursor = e.target.result
+                if(cursor){
+                  if(cursor.key == value.value){
+                    localStorage.setItem("save_slot" , cursor.key)
+                    editor.value = cursor.value
+                    reloadBtn.style.background = "red"
+                  }
+                }
+                cursor?.continue()
+              }
+          })
+        })
+    }
+    }
+    OpenRequest.onsuccess = () => {
+        db = OpenRequest.result
+        main()
+    }
+    editor.oninput = () => {
+      openBtn.style.background = "red"
+    }
+    setInterval(() => {
+      OpenRequest = window.indexedDB.open("text")
+      OpenRequest.onsuccess = () => {
+        db = OpenRequest.result
+        // console.log(localStorage.getItem("save_slot"))
+        const transaction = db.transaction("texts" , "readwrite").objectStore("texts")
+        transaction.put(editor.value , localStorage.getItem("save_slot"))
+        openBtn.style.background = "green"
+      }
+    } , 10000)
+
+  </script>
+</html>
